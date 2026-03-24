@@ -79,6 +79,8 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
+
+
                 controller = new CommandXboxController(0);
                 switch (Constants.currentMode) {
                         case REAL:
@@ -131,9 +133,15 @@ public class RobotContainer {
                 hood,
                 hanger
                 );
-
                 // Set up auto routines
                 autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+                //register named commands
+                NamedCommands.registerCommand("aimAndShoot", subsystemCommands.aimAndShoot().withTimeout(10));
+                NamedCommands.registerCommand("deployIntake", intake.intakeCommand());
+                NamedCommands.registerCommand("stowIntake", intake.runOnce(() -> intake.set(Intake.Position.STOWED)));
+
+
+                
 
                 // Configure the button bindings
                 configureButtonBindings();
@@ -151,9 +159,7 @@ public class RobotContainer {
         private void configureButtonBindings() {
 
 
-                NamedCommands.registerCommand("Aim and Shoot", subsystemCommands.aimAndShoot());
-                NamedCommands.registerCommand("Deploy Intake", intake.intakeCommand());
-                NamedCommands.registerCommand("Stow Intake", intake.runOnce(() -> intake.set(Intake.Position.STOWED))); 
+ 
 
                 // Default command, normal field-relative drive
                 drive.setDefaultCommand(
@@ -176,6 +182,7 @@ public class RobotContainer {
                 controller.povDown().onTrue(hanger.positionCommand(Hanger.Position.HUNG));
         }
 
+        
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
          *
